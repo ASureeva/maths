@@ -51,63 +51,62 @@ class Statistics():
 
     def create_table_interval(self):
         for i in range(0, self.count_int):
-            self.table_interval[i] = [0, 0]
+            self.table_interval[i] = {
+                'frequency': 0,  # 0
+                'frequency_funded': 0,  # 1
+                'x': 0,  # 2
+                'z': 0,  # 3
+                'z_two': 0,  # 4
+                'z_third': 0,  # 5
+                'z_fourth': 0  # 6
+            }
 
     def create_n(self):
         step = 0
         accumulation = 0
         count_inter = self.min
         for i in range(0, self.count):
-            # print(i)
-            # print(self.table_interval)
-            # print(f'opopopop{self.list[i]}--{step*self.length + self.min + self.length}')
             if self.list[i] < step*self.length + self.min + self.length:
-                # print(f'{self.list[i]}')
-                self.table_interval[step][0] += 1  # первый элемент
-                # print(f'cou---{self.table_interval[step][0]}---{step}')
+                self.table_interval[step]['frequency'] += 1  # первый элемент
                 accumulation += 1
-                self.table_interval[step][1] = accumulation
+                self.table_interval[step]['frequency_funded'] = accumulation
             elif step != 5:
-                # print(f'{self.list[i]}')
                 step += 1
-                self.table_interval[step][0] += 1  # первый элемент
-                # print(f'cou---{self.table_interval[step][0]}---{step}')
+                self.table_interval[step]['frequency'] += 1  # первый элемент
                 accumulation += 1
-                self.table_interval[step][1] = accumulation
+                self.table_interval[step]['frequency_funded'] = accumulation
                 count_inter = count_inter + self.length
 
     def create_x(self):
         # print(f'{self.length}omg')
         for i in range(0, self.count_int):
-            self.table_interval[i].append(((i)*self.length + self.min*2 + (i+1)*self.length)/2)  # третий элемент
+            self.table_interval[i]['x'] = ((i*self.length + self.min*2 + (i+1)*self.length)/2)  # третий элемент
 
     def search_average_value(self):
         average_value = 0
         for i in range(0, self.count_int):
-            average_value += (self.table_interval[i][0] * (self.table_interval[i][2])) / self.count
+            average_value += (self.table_interval[i]['frequency'] * (self.table_interval[i]['x'])) / self.count
         return average_value
 
     def create_z(self):
         print(self.average_value)
         for i in range(0, self.count_int):
-            print(self.table_interval[i][2] - self.average_value)
-            self.table_interval[i].append(self.table_interval[i][2] - self.average_value)  # четвертый элемент
+            print(self.table_interval[i]['x'] - self.average_value)
+            self.table_interval[i]['z'] = (self.table_interval[i]['x'] - self.average_value)  # четвертый элемент
 
     def create_all_z(self):
-        self.create_z_degree(2)  # пятый элемент
-        self.create_z_degree(3)  # шестой элемент
-        self.create_z_degree(4)  # седьмой элемент
+        self.create_z_degree(2, 'z_two')  # пятый элемент
+        self.create_z_degree(3, 'z_third')  # шестой элемент
+        self.create_z_degree(4, 'z_fourth')  # седьмой элемент
 
-    def create_z_degree(self, degree):
-        # print(self.table_interval)
+    def create_z_degree(self, degree, name_of_degree):
         for i in range(0, self.count_int):
-            # print(f'{degree} -- {self.table_interval[i]}')
-            self.table_interval[i].append(self.table_interval[i][3]**degree)
+            self.table_interval[i][name_of_degree] = self.table_interval[i]['z']**degree
 
     def create_dispersion(self):
         dispersion = 0
         for i in range(0, self.count_int):
-            dispersion += self.table_interval[i][0] * (self.table_interval[i][2]) / self.count
+            dispersion += self.table_interval[i]['frequency'] * (self.table_interval[i]['z_two']) / self.count
         return dispersion
 
     def create_root_of_dispersion(self):
@@ -120,17 +119,17 @@ class Statistics():
         for i in range(0, self.count_int):
             # print(self.table_interval[i])
             # print(self.table_interval[i][0])
-            if self.table_interval[i][0] >= marker:
-                marker = self.table_interval[i][0]
+            if self.table_interval[i]['frequency'] >= marker:
+                marker = self.table_interval[i]['frequency']
                 link_on_marker = i
         return link_on_marker
 
     def create_fashion(self):
         x_zero = (self.fashion_line*self.length + self.min)
-        n_m = self.table_interval[self.fashion_line][0]
-        n_m_minus_one = self.table_interval[self.fashion_line - 1][0]
+        n_m = self.table_interval[self.fashion_line]['frequency']
+        n_m_minus_one = self.table_interval[self.fashion_line - 1]['frequency']
         # print(self.fashion_line)
-        n_m_plus_one = self.table_interval[self.fashion_line + 1][0]
+        n_m_plus_one = self.table_interval[self.fashion_line + 1]['frequency']
         fashion = x_zero + ((n_m - n_m_minus_one)*self.length)/((n_m - n_m_minus_one) + (n_m - n_m_plus_one))
         return fashion
 
@@ -143,22 +142,22 @@ class Statistics():
 
     def create_median(self):
         x_zero = self.median_line*self.length + self.min
-        n_m_minus_one_nak = self.table_interval[self.median_line - 1][1]
-        n_m = self.table_interval[self.median_line][0]
+        n_m_minus_one_nak = self.table_interval[self.median_line - 1]['frequency_funded']
+        n_m = self.table_interval[self.median_line]['frequency']
         median = x_zero + ((0.5*self.count - n_m_minus_one_nak)*self.length) / n_m
         return median
 
     def create_m_third(self):
         m_third = 0
         for i in range(0, self.count_int):
-            m_third += self.table_interval[i][0] * (self.table_interval[i][5]) / self.count
+            m_third += self.table_interval[i]['frequency'] * (self.table_interval[i]['z_third']) / self.count
         print(f'{m_third} m_third')
         return m_third
 
     def create_m_fourth(self):
         m_fourth = 0
         for i in range(0, self.count_int):
-            m_fourth += self.table_interval[i][0] * (self.table_interval[i][6]) / self.count
+            m_fourth += self.table_interval[i]['frequency'] * (self.table_interval[i]['z_fourth']) / self.count
         print(f'{m_fourth} m_fourth')
         return m_fourth
 

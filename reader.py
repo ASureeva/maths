@@ -9,7 +9,7 @@ def cypher_code():
 
     # data.to_csv(index=False)
     # data = pandas.read_excel(file)
-    return data['YearsExperience'].tolist()
+    return data
 
 #
 # if __name__ == '__main__':
