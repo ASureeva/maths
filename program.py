@@ -13,11 +13,17 @@ matplotlib.use('TkAgg')
 
 
 def main(file, sheet, table_name):
+    result = [False, 0]
     text = cypher_code(file, sheet)
+    if text[0]:
     # data = text['YearsExperience'].tolist()
-    data = text[table_name].tolist()
-    math = Statistics(data, len(data))
-    return math
+        data = text[1][table_name].tolist()
+        try:
+            result[1] = Statistics(data, len(data))
+            result[0] = True
+        except Exception:
+            print('не могу выполнить код')
+    return result
 
 
 def window_drive():
@@ -27,21 +33,25 @@ def window_drive():
     ww.title("Maths")
 
     frame1 = tk.Frame()
-    frame1.pack(side=tk.LEFT)
-    link_l = tk.Label(ww, text="Укажите ссылку к файлу, где лежат данные", width=10)
-    link_l.pack(padx=20, pady=5)
-    link = tk.Entry(ww)
-    link.pack(padx=10, pady=10)
+    frame1.pack()
+    link_l = tk.Label(master=frame1, text="Укажите ссылку к файлу, где лежат данные", width=100)
+    link_l.pack()
+    link = tk.Entry(master=frame1, width=100)
+    link.pack()
 
-    sheet_l = tk.Label(text="Напишите название таблицы", width=10)
-    sheet_l.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
-    sheet_name = tk.Entry(ww, show=None)
-    sheet_name.pack(fill=tk.BOTH, padx="0", pady="6")
+    frame2 = tk.Frame()
+    frame2.pack()
+    sheet_l = tk.Label(master=frame1, text="Напишите название таблицы", width=100)
+    sheet_l.pack()
+    sheet_name = tk.Entry(master=frame1, width=100)
+    sheet_name.pack()
 
-    table_l = tk.Label(text="Напишите название столбца", width=10)
-    table_l.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
-    table_name = tk.Entry(ww, show=None)
-    table_name.pack(fill=tk.BOTH, padx="15", pady="6")
+    frame3 = tk.Frame()
+    frame3.pack()
+    table_l = tk.Label(master=frame1, text="Напишите название столбца", width=100)
+    table_l.pack()
+    table_name = tk.Entry(master=frame1, width=100)
+    table_name.pack()
 
     t = tk.Text(ww, height=20)
     ff = Figure(figsize=(6, 6), dpi=100)
@@ -53,26 +63,29 @@ def window_drive():
 
     def insert_point():
         t.delete("1.0", "end")
-        t.pack()
+        t.pack(side=tk.LEFT)
         var = link.get()
         var_2 = sheet_name.get()
         var_3 = table_name.get()
         math = main(var, var_2, var_3)
-        t.insert('insert', cr_answer(math))
-        data = math.data
-        print(data)
-        xx.clear()
-        canvas.get_tk_widget().delete(canvas.get_tk_widget().find_all())
-        # ff = Figure(figsize=(6, 6), dpi=100)
-        # xx = ff.add_subplot(111)
-        ind = math.lis
-        rects1 = xx.bar(ind, data, math.length)
-        # canvas = FigureCanvasTkAgg(ff, master=ww)
-        canvas.draw()
-        canvas.get_tk_widget().pack(side=tk.RIGHT)
+        if math[0]:
+            t.insert('insert', cr_answer(math[1]))
+            data = math[1].data
+            xx.clear()
+            canvas.get_tk_widget().delete(canvas.get_tk_widget().find_all())
+            # ff = Figure(figsize=(6, 6), dpi=100)
+            # xx = ff.add_subplot(111)
+            ind = math[1].lis
+            rects1 = xx.bar(ind, data, math[1].length)
+            # canvas = FigureCanvasTkAgg(ff, master=ww)
+            canvas.draw()
+            canvas.get_tk_widget().pack(side=tk.RIGHT)
+        else:
+            t.insert('insert', 'Не могу провести расчет.\n'
+                               'Пожалуйста, проверьте ссылку на документ,\n'
+                               'название таблицы, имя столбца или данные в таблице')
 
-    b1 = tk.Button(ww, text='insert point', width=15, padx="15", pady="6",
-                    height=2, command=insert_point)
+    b1 = tk.Button(master=frame1, text='Рассчитать', width=15, height=2, command=insert_point)
     b1.pack()
 
     ww.mainloop()

@@ -23,9 +23,7 @@ class Statistics():
         self.fashion_line = self.search_fashion_line()
         self.fashion = self.create_fashion()
         self.median_line = self.search_median_line()
-        print(f'{self.median_line}median')
         self.median = self.create_median()
-        # print(self.table_interval)
         self.m_third = self.create_m_third()
         self.m_fourth = self.create_m_fourth()
         self.asymmetry = self.create_a_third()
@@ -48,7 +46,6 @@ class Statistics():
 
     def length_interval(self):
         length = (self.max - self.min) / self.count_int
-        # print(f'{length * self.count_int}--{self.max - self.min}')
         if length * self.count_int == self.max - self.min:
             length += length*0.01/100
         return length
@@ -82,7 +79,6 @@ class Statistics():
                 count_inter = count_inter + self.length
 
     def create_x(self):
-        # print(f'{self.length}omg')
         for i in range(0, self.count_int):
             self.table_interval[i]['x'] = ((i*self.length + self.min*2 + (i+1)*self.length)/2)  # третий элемент
 
@@ -93,9 +89,7 @@ class Statistics():
         return average_value
 
     def create_z(self):
-        # print(self.average_value)
         for i in range(0, self.count_int):
-            # print(self.table_interval[i]['x'] - self.average_value)
             self.table_interval[i]['z'] = (self.table_interval[i]['x'] - self.average_value)  # четвертый элемент
 
     def create_all_z(self):
@@ -121,8 +115,6 @@ class Statistics():
         marker = 0
         link_on_marker = 0
         for i in range(0, self.count_int):
-            # print(self.table_interval[i])
-            # print(self.table_interval[i][0])
             if self.table_interval[i]['frequency'] >= marker:
                 marker = self.table_interval[i]['frequency']
                 link_on_marker = i
@@ -132,57 +124,42 @@ class Statistics():
         x_zero = (self.fashion_line*self.length + self.min)
         n_m = self.table_interval[self.fashion_line]['frequency']
         n_m_minus_one = self.table_interval[self.fashion_line - 1]['frequency']
-        # print(self.fashion_line)
         n_m_plus_one = self.table_interval[self.fashion_line + 1]['frequency']
         fashion = x_zero + ((n_m - n_m_minus_one)*self.length)/((n_m - n_m_minus_one) + (n_m - n_m_plus_one))
         return fashion
 
     def search_median_line(self):
         index = 1
-        marker = self.list[self.count//2]
-        # print(f'{marker}marker')
-        # print(self.list)
+        marker = self.list[self.count//2] + 1
         for i in range(self.count_int):
-            # print(i*self.length + self.min)
             if i*self.length + self.min <= marker < (i+1)*self.length + self.min:
-                # print(index)
-                # print(i)
                 index = i
-
-        # print(f"{index} index")
         return index
 
     def create_median(self):
         x_zero = self.median_line*self.length + self.min
-        # print(self.median_line)
         n_m_minus_one_nak = self.table_interval[self.median_line - 1]['frequency_funded']
         n_m = self.table_interval[self.median_line]['frequency']
         median = x_zero + ((0.5*self.count - n_m_minus_one_nak)*self.length) / n_m
-        print(f"{x_zero} x_zero")
         return median
 
     def create_m_third(self):
         m_third = 0
         for i in range(0, self.count_int):
             m_third += self.table_interval[i]['frequency'] * (self.table_interval[i]['z_third']) / self.count
-        # print(f'{m_third} m_third')
         return m_third
 
     def create_m_fourth(self):
         m_fourth = 0
         for i in range(0, self.count_int):
             m_fourth += self.table_interval[i]['frequency'] * (self.table_interval[i]['z_fourth']) / self.count
-        # print(f'{m_fourth} m_fourth')
         return m_fourth
 
     def create_a_third(self):
-        # print(f'{self.root_of_dispersion} root ')
-        # print(f'{ self.root_of_dispersion**3} root 3')
         a_third = self.m_third / self.root_of_dispersion**3
         return a_third
 
     def create_e_k(self):
-        # print(f'{self.root_of_dispersion ** 4} root 4')
         e_k = self.m_fourth / self.root_of_dispersion**4 - 3
         return e_k
 
@@ -190,13 +167,11 @@ class Statistics():
         for element in range(self.count_int):
             self.data.append(self.table_interval[element]['frequency']/self.count)
             self.lis.append(self.table_interval[element]['x'])
-        # print(self.data)
-        # print(self.lis)
 
 
-
-if __name__ == '__main__':
-    list = [1.1, 1.3, 1.5, 2, 2.2, 2.9, 3, 3.2, 3.2, 3.7, 3.9, 4, 4, 4.1, 4.5, 4.9, 5.1, 5.3, 5.9, 6, 6.8, 7.1, 7.9,
-            8.2, 8.7, 9, 9.5, 9.6, 10.3, 10.5 ]
-    math = Statistics(list, 30)
-    print(f'{math.table_interval}. Excess:{math.excess}. Asy:{math.asymmetry}. Dis:{math.dispersion}.Ave:{math.average_value}')
+# if __name__ == '__main__':
+#     list = [1.1, 1.3, 1.5, 2, 2.2, 2.9, 3, 3.2, 3.2, 3.7, 3.9, 4, 4, 4.1, 4.5, 4.9, 5.1, 5.3, 5.9, 6, 6.8, 7.1, 7.9,
+#             8.2, 8.7, 9, 9.5, 9.6, 10.3, 10.5 ]
+#     math = Statistics(list, 30)
+#     print(f'{math.table_interval}. Excess:{math.excess}. Asy:{math.asymmetry}.
+#     Dis:{math.dispersion}.Ave:{math.average_value}')

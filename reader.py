@@ -2,8 +2,13 @@ import pandas
 
 
 def cypher_code(file, sheet):
-    data = pandas.read_excel(file, sheet_name=sheet)
-    return data
+    result = [False, 0]
+    try:
+        result[1] = pandas.read_excel(file, sheet_name=sheet)
+        result[0] = True
+    except Exception:
+        print('не могу прочитать')
+    return result
 
 #
 # if __name__ == '__main__':
