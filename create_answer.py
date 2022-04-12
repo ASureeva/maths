@@ -47,7 +47,8 @@ def cr_answer(math):
     sing_asymmetry = analyze_asymmetry_sign(math.asymmetry)
     asymmetry_string = f"Так как {degree_asymmetry[0]},\n то ассиметрия {degree_asymmetry[1]} и {sing_asymmetry}."
     sign_excess = analyze_excess_sign(math.excess)
-    excess_string = f'Так как {sign_excess[0]},\n то эмперическое распределение является {sign_excess[1]}\n относительно ' \
+    excess_string = f'Так как {sign_excess[0]},\n то эмперическое распределение является \n {sign_excess[1]}' \
+                    f'\n относительно ' \
                     f'эталонного нормального распределенная.'
     answer = f'Минимальное значение: {math.min}\n' \
              f'Максимальное значение: {math.max}\n' \

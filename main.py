@@ -1,7 +1,7 @@
 import math
 
 
-class Statistics():
+class Statistics:
 
     def __init__(self, list, count):
         self.count = count
@@ -121,10 +121,17 @@ class Statistics():
         return link_on_marker
 
     def create_fashion(self):
+        if self.fashion_line == 0:
+            n_m_minus_one = 0
+            n_m_plus_one = self.table_interval[self.fashion_line + 1]['frequency']
+        elif self.fashion_line == self.count_int - 1:
+            n_m_minus_one = self.table_interval[self.fashion_line - 1]['frequency']
+            n_m_plus_one = 0
+        else:
+            n_m_minus_one = self.table_interval[self.fashion_line - 1]['frequency']
+            n_m_plus_one = self.table_interval[self.fashion_line + 1]['frequency']
         x_zero = (self.fashion_line*self.length + self.min)
         n_m = self.table_interval[self.fashion_line]['frequency']
-        n_m_minus_one = self.table_interval[self.fashion_line - 1]['frequency']
-        n_m_plus_one = self.table_interval[self.fashion_line + 1]['frequency']
         fashion = x_zero + ((n_m - n_m_minus_one)*self.length)/((n_m - n_m_minus_one) + (n_m - n_m_plus_one))
         return fashion
 
@@ -137,8 +144,11 @@ class Statistics():
         return index
 
     def create_median(self):
+        if self.median_line == 0:
+            n_m_minus_one_nak = 0
+        else:
+            n_m_minus_one_nak = self.table_interval[self.median_line - 1]['frequency_funded']
         x_zero = self.median_line*self.length + self.min
-        n_m_minus_one_nak = self.table_interval[self.median_line - 1]['frequency_funded']
         n_m = self.table_interval[self.median_line]['frequency']
         median = x_zero + ((0.5*self.count - n_m_minus_one_nak)*self.length) / n_m
         return median
@@ -170,8 +180,8 @@ class Statistics():
 
 
 # if __name__ == '__main__':
-#     list = [1.1, 1.3, 1.5, 2, 2.2, 2.9, 3, 3.2, 3.2, 3.7, 3.9, 4, 4, 4.1, 4.5, 4.9, 5.1, 5.3, 5.9, 6, 6.8, 7.1, 7.9,
-#             8.2, 8.7, 9, 9.5, 9.6, 10.3, 10.5 ]
+#     list = [1, 1, 1, 1, 1, 1, 121321323, 1, 1, 1, 1, 1, 1, 11, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]
 #     math = Statistics(list, 30)
-#     print(f'{math.table_interval}. Excess:{math.excess}. Asy:{math.asymmetry}.
-#     Dis:{math.dispersion}.Ave:{math.average_value}')
+#     print(math.table_interval)
+    # print(f'{math.table_interval}. Excess:{math.excess}. Asy:{math.asymmetry}.
+    # Dis:{math.dispersion}.Ave:{math.average_value}')
