@@ -3,6 +3,7 @@ from main import Statistics
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from create_answer import cr_answer
+from tkinter import ttk
 import matplotlib.pyplot as plt
 import matplotlib
 import tkinter as tk
@@ -63,8 +64,18 @@ def window_drive():
     frame4 = tk.Frame(master=frame5)
     frame4.pack()
 
+    tv = ttk.Treeview(frame4)
+    list_columns = ('строка', 'интервал', 'n', 'n нак.', 'x среднее', 'z', 'z**2', 'z**3', 'z**4')
+    tv['columns'] = list_columns
+    tv.column('#0', width=0, stretch=tk.NO)
+    for i in range(9):
+        tv.column(list_columns[i], anchor=tk.CENTER, width=80)
+    tv.heading('#0', text='', anchor=tk.CENTER)
+    for i in range(9):
+        tv.heading(list_columns[i], text=list_columns[i], anchor=tk.CENTER)
+
     t = tk.Text(frame5, height=20, width=60)
-    ff = Figure(figsize=(6, 6), dpi=60)
+    ff = Figure(figsize=(6, 6), dpi=100)
     xx = ff.add_subplot(111)
     rects1 = xx.bar([0], [0], 1)
     canvas = FigureCanvasTkAgg(ff, master=ww)
@@ -73,35 +84,33 @@ def window_drive():
 
     def create_table(math):
         table = math.table_interval
-        height = math.count_int + 1
-        table[math.count_int] = {
-            'frequency': 'n',  # 0
-            'frequency_funded': 'n нак.',  # 1
-            'x': 'x среднее',  # 2
-            'z': 'z',  # 3
-            'z_two': 'z**2',  # 4
-            'z_third': 'z**3',  # 5
-            'z_fourth': 'z**4'  # 6
-        }
-        for element in table:
-            table[element]['name_table'] = element + 1
-        for i in range(height):
-            width = 0
-            for j in table[i]:
-                b = tk.Label(master=frame4, text=table[i][j], height=3)
-                b.grid(row=i, column=width)
-                width += 1
+
+        for element in range(math.count_int):
+            table[element]['interval'] = f'{round((element * math.length + math.min), 3)} - ' \
+                                         f'{round((element * math.length + math.min + math.length), 3)}'
+
+        for i in range(math.count_int):
+            tv.insert(parent='', index=i, iid=i, text='', values=(i + 1, math.table_interval[i]['interval'],
+                                                                  math.table_interval[i]['frequency'],
+                                                                  math.table_interval[i]['frequency_funded'],
+                                                                  math.table_interval[i]['x'],
+                                                                  math.table_interval[i]['z'],
+                                                                  math.table_interval[i]['z_two'],
+                                                                  math.table_interval[i]['z_third'],
+                                                                  math.table_interval[i]['z_fourth']
+                                                                  ))
+
+        tv.pack()
 
     def insert_point():
         t.delete("1.0", "end")
         t.pack(side=tk.LEFT)
+        for i in tv.get_children():
+            tv.delete(i)
 
-        frame4.pack_forget()
-        frame4.pack(side=tk.LEFT)
-
-        rects1 = xx.bar([0], [0], 1)
+        # rects1 = xx.bar([0], [0], 1)
         # canvas.draw()
-        canvas.get_tk_widget().pack(side=tk.RIGHT)
+        # canvas.get_tk_widget().pack(side=tk.RIGHT)
 
 
         var = link.get()
@@ -125,7 +134,7 @@ def window_drive():
             t.insert('insert', 'Не могу провести расчет.\n'
                                'Пожалуйста, проверьте ссылку на документ,\n'
                                'название таблицы, имя столбца или данные в таблице.\n'
-                               'Данные в таблице и гистограмме относятся к тем данным,\n'
+                               'Данные в гистограмме относятся к тем данным,\n'
                                'которые вы вводили ранее, не пугайтесь)')
 
     b1 = tk.Button(master=frame1, text='Рассчитать', width=15, height=2, command=insert_point)
